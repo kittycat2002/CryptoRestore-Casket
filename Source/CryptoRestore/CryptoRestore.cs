@@ -20,14 +20,14 @@ namespace CryptoRestore
         CompProperties_Power props;
         CompProperties_Refuelable fuelprops;
 
-        public int AgeHediffs()
+        public int AgeHediffs(Pawn pawn)
         {
-            if (HasAnyContents)
+            if (pawn != null)
             {
                 bool hasCataracts = false;
                 bool hasHearingLoss = false;
                 int hediffs = 0;
-                foreach (Hediff injury in (ContainedThing as Pawn).health.hediffSet.GetHediffs<Hediff>().ToList())
+                foreach (Hediff injury in pawn.health.hediffSet.GetHediffs<Hediff>().ToList())
                 {
                     string injuryName = injury.def.label;
                     if (injuryName == "cataract" && !hasCataracts)
@@ -67,75 +67,81 @@ namespace CryptoRestore
         {
             if (HasAnyContents && refuelable.HasFuel)
             {
-                power.PowerOutput = -props.basePowerConsumption;
-                if (power.PowerOn)
+                Pawn pawn = ContainedThing as Pawn;
+                bool hasHediffs = AgeHediffs(pawn) > 0;
+                if (hasHediffs || pawn.ageTracker.AgeBiologicalTicks > GenDate.TicksPerYear * 21)
                 {
-                    refuelable.ConsumeFuel(fuelConsumption * 250f / GenDate.TicksPerYear);
-                    cryptoHediffCooldown = Math.Max(cryptoHediffCooldown - 250, 0);
-                    Pawn pawn = ContainedThing as Pawn;
-                    if (pawn.ageTracker.AgeBiologicalTicks > GenDate.TicksPerYear * 21)
-                        pawn.ageTracker.AgeBiologicalTicks = Math.Max(pawn.ageTracker.AgeBiologicalTicks - rate * 250, GenDate.TicksPerYear * 21);
-                    if (cryptoHediffCooldown == 0)
+                    power.PowerOutput = -props.basePowerConsumption;
+                    if (power.PowerOn)
                     {
-                        foreach (Hediff oldHediff in pawn.health.hediffSet.GetHediffs<Hediff>().ToList())
+                        refuelable.ConsumeFuel(fuelConsumption * 250f / GenDate.TicksPerYear);
+                        cryptoHediffCooldown = Math.Max(cryptoHediffCooldown - 250, 0);
+                        if (pawn.ageTracker.AgeBiologicalTicks > GenDate.TicksPerYear * 21)
+                            pawn.ageTracker.AgeBiologicalTicks = Math.Max(pawn.ageTracker.AgeBiologicalTicks - rate * 250, GenDate.TicksPerYear * 21);
+                        if (hasHediffs && cryptoHediffCooldown == 0)
                         {
-                            string hediffName = oldHediff.def.label;
-                            if (hediffName == "bad back" && pawn.ageTracker.AgeBiologicalYears < 39)
+                            foreach (Hediff oldHediff in pawn.health.hediffSet.GetHediffs<Hediff>().ToList())
                             {
-                                pawn.health.RemoveHediff(oldHediff);
-                                cryptoHediffCooldown = cryptoHediffCooldownBase;
-                                break;
-                            }
-                            else if (hediffName == "frail" && pawn.ageTracker.AgeBiologicalYears < 48)
-                            {
-                                pawn.health.RemoveHediff(oldHediff);
-                                cryptoHediffCooldown = cryptoHediffCooldownBase;
-                                break;
-                            }
-                            else if (hediffName == "cataract" && pawn.ageTracker.AgeBiologicalYears < 52)
-                            {
-                                foreach (Hediff cataractHediff in pawn.health.hediffSet.GetHediffs<Hediff>().ToList())
+                                string hediffName = oldHediff.def.label;
+                                if (hediffName == "bad back" && pawn.ageTracker.AgeBiologicalYears < 39)
                                 {
-                                    if (cataractHediff.def.label == "cataract")
-                                    {
-                                        pawn.health.RemoveHediff(cataractHediff);
-                                    }
-                                }
-                                cryptoHediffCooldown = cryptoHediffCooldownBase;
-                                break;
-                            }
-                            else if (hediffName == "hearing loss" && pawn.ageTracker.AgeBiologicalYears < 52)
-                            {
-                                foreach (Hediff hearingHediff in pawn.health.hediffSet.GetHediffs<Hediff>().ToList())
-                                {
-                                    if (hearingHediff.def.label.ToString() == "hearing loss")
-                                    {
-                                        pawn.health.RemoveHediff(hearingHediff);
-                                    }
-                                }
-                                cryptoHediffCooldown = cryptoHediffCooldownBase;
-                                break;
-                            }
-                            else if (hediffName == "dementia" && pawn.ageTracker.AgeBiologicalYears < 66)
-                            {
-                                pawn.health.RemoveHediff(oldHediff);
-                                cryptoHediffCooldown = cryptoHediffCooldownBase;
-                                break;
-                            }
-                            else if (hediffName == "alzheimer's" && pawn.ageTracker.AgeBiologicalYears < 72)
-                            {
-                                oldHediff.Heal(1/7.5f);
-                                if (oldHediff.Severity > 0) cryptoHediffCooldown = GenDate.TicksPerDay;
-                                else
-                                {
-                                    cryptoHediffCooldown = cryptoHediffCooldownBase;
                                     pawn.health.RemoveHediff(oldHediff);
+                                    cryptoHediffCooldown = cryptoHediffCooldownBase;
+                                    break;
                                 }
-                                break;
+                                else if (hediffName == "frail" && pawn.ageTracker.AgeBiologicalYears < 48)
+                                {
+                                    pawn.health.RemoveHediff(oldHediff);
+                                    cryptoHediffCooldown = cryptoHediffCooldownBase;
+                                    break;
+                                }
+                                else if (hediffName == "cataract" && pawn.ageTracker.AgeBiologicalYears < 52)
+                                {
+                                    foreach (Hediff cataractHediff in pawn.health.hediffSet.GetHediffs<Hediff>().ToList())
+                                    {
+                                        if (cataractHediff.def.label == "cataract")
+                                        {
+                                            pawn.health.RemoveHediff(cataractHediff);
+                                        }
+                                    }
+                                    cryptoHediffCooldown = cryptoHediffCooldownBase;
+                                    break;
+                                }
+                                else if (hediffName == "hearing loss" && pawn.ageTracker.AgeBiologicalYears < 52)
+                                {
+                                    foreach (Hediff hearingHediff in pawn.health.hediffSet.GetHediffs<Hediff>().ToList())
+                                    {
+                                        if (hearingHediff.def.label.ToString() == "hearing loss")
+                                        {
+                                            pawn.health.RemoveHediff(hearingHediff);
+                                        }
+                                    }
+                                    cryptoHediffCooldown = cryptoHediffCooldownBase;
+                                    break;
+                                }
+                                else if (hediffName == "dementia" && pawn.ageTracker.AgeBiologicalYears < 66)
+                                {
+                                    pawn.health.RemoveHediff(oldHediff);
+                                    cryptoHediffCooldown = cryptoHediffCooldownBase;
+                                    break;
+                                }
+                                else if (hediffName == "alzheimer's" && pawn.ageTracker.AgeBiologicalYears < 72)
+                                {
+                                    oldHediff.Heal(1 / 7.5f);
+                                    if (oldHediff.Severity > 0) cryptoHediffCooldown = GenDate.TicksPerDay;
+                                    else
+                                    {
+                                        cryptoHediffCooldown = cryptoHediffCooldownBase;
+                                        pawn.health.RemoveHediff(oldHediff);
+                                    }
+                                    break;
+                                }
                             }
                         }
                     }
                 }
+                else
+                    power.PowerOutput = 0;
             }
             else
                 power.PowerOutput = 0;
@@ -160,7 +166,7 @@ namespace CryptoRestore
             {
                 cryptoHediffCooldown = cryptoHediffCooldownBase;
                 enterTime = Find.TickManager.TicksGame;
-                if (refuelable.HasFuel)
+                if (refuelable.HasFuel && (AgeHediffs(thing as Pawn) > 0 || (thing as Pawn).ageTracker.AgeBiologicalTicks > GenDate.TicksPerYear * 21))
                     power.PowerOutput = -props.basePowerConsumption;
                 return true;
             }
@@ -174,7 +180,7 @@ namespace CryptoRestore
                 Pawn pawn = ContainedThing as Pawn;
                 pawn.ageTracker.AgeBiologicalTicks.TicksToPeriod(out int years, out int quadrums, out int days, out float hours);
                 string bioTime = "AgeBiological".Translate(new object[]{years,quadrums,days});
-                return base.GetInspectString() + ", " + AgeHediffs().ToString() + " Age Hediffs\n" + bioTime;
+                return base.GetInspectString() + ", " + AgeHediffs(pawn).ToString() + " Age Hediffs\n" + bioTime;
             }
             else return base.GetInspectString();
         }

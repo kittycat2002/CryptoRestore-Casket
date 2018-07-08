@@ -22,7 +22,7 @@
       <MaxHitPoints>250</MaxHitPoints>
       <Flammability>1.0</Flammability>
     </statBases>
-    <tickerType>Rare</tickerType>
+    <tickerType>Normal</tickerType>
     <description>A sarcophagus designed to keep a person in a state of suspended animation while their body is restored to their prime condition. (WARNING: Causes luciferium addiction.)</description>
     <size>(1,2)</size>
     <designationCategory>Misc</designationCategory>
@@ -35,8 +35,8 @@
     <costList>
       <Steel>220</Steel>
       <Uranium>10</Uranium>
-      <Component>8</Component>
-	  <AdvancedComponent>2</AdvancedComponent>
+      <ComponentIndustrial>8</ComponentIndustrial>
+	  <ComponentSpacer>2</ComponentSpacer>
     </costList>
     <comps>
       <li Class="CompProperties_Power">

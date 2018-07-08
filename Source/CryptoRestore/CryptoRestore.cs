@@ -63,7 +63,7 @@ namespace CryptoRestore
             Scribe_Values.Look(ref cryptoHediffCooldown, "cryptoHediffCooldown");
             Scribe_Values.Look(ref enterTime, "enterTime");
         }
-        public override void TickRare()
+        public override void Tick()
         {
             if (HasAnyContents && refuelable.HasFuel)
             {
@@ -74,10 +74,10 @@ namespace CryptoRestore
                     power.PowerOutput = -props.basePowerConsumption;
                     if (power.PowerOn)
                     {
-                        refuelable.ConsumeFuel(fuelConsumption * 250f / GenDate.TicksPerYear);
-                        cryptoHediffCooldown = Math.Max(cryptoHediffCooldown - 250, 0);
+                        refuelable.ConsumeFuel(fuelConsumption / GenDate.TicksPerYear);
+                        cryptoHediffCooldown = Math.Max(cryptoHediffCooldown - 1, 0);
                         if (pawn.ageTracker.AgeBiologicalTicks > GenDate.TicksPerYear * 21)
-                            pawn.ageTracker.AgeBiologicalTicks = Math.Max(pawn.ageTracker.AgeBiologicalTicks - rate * 250, GenDate.TicksPerYear * 21);
+                            pawn.ageTracker.AgeBiologicalTicks = Math.Max(pawn.ageTracker.AgeBiologicalTicks - rate, GenDate.TicksPerYear * 21);
                         if (hasHediffs && cryptoHediffCooldown == 0)
                         {
                             foreach (Hediff oldHediff in pawn.health.hediffSet.GetHediffs<Hediff>().ToList())

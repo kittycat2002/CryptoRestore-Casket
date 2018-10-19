@@ -2,3 +2,7 @@ C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CryptoRestore Casket
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CryptoRestore Casket\Source\CryptoRestore\obj\Debug\CryptoRestore.csproj.CoreCompileInputs.cache
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CryptoRestore Casket\Source\CryptoRestore\obj\Debug\CryptoRestore.dll
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\CryptoRestore Casket\Source\CryptoRestore\obj\Debug\CryptoRestore.csprojResolveAssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Cryptorestore Caskets (1.0)\Assemblies\CryptoRestore.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Cryptorestore Caskets (1.0)\Source\CryptoRestore\obj\Debug\CryptoRestore.csprojResolveAssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Cryptorestore Caskets (1.0)\Source\CryptoRestore\obj\Debug\CryptoRestore.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Cryptorestore Caskets (1.0)\Source\CryptoRestore\obj\Debug\CryptoRestore.dll

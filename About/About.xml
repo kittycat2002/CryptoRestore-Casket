@@ -2,6 +2,10 @@
 <ModMetaData>
   <name>Cryptorestore Caskets (1.0)</name>
   <author>cat2002</author>
-  <targetVersion>1.0.2045</targetVersion>
+  <packageId>cat2002.cryptoRestore</packageId>
+  <supportedVersions>
+    <li>1.0</li>
+    <li>1.1</li>
+  </supportedVersions>
   <description>Adds a new Crypto Casket which reverses aging and related illnesses.\n\nCredit to Allet for the art</description>
 </ModMetaData>
